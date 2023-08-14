@@ -755,7 +755,13 @@ def create_model(trainX, trainy):
 
 #############################################################
 # 1. First need to train statistical model separately
-	# Statistical_Feat_DNN_model_train_predict_tensorflowa8ow() #0.44 30 epocs
-  #  Statistical_Feat_DNN_model_train_predict_tensorflow_ooxml() #0.517 30 epocs cat and 1-gram, 0.47 30 epocs, add sequence is not working
-    ##end#####################################
-  
+# Statistical_Feat_DNN_model_train_predict_tensorflow
+# 2. Combine pretrained statistical model inputs with
+# fifty state of the art model, train and preidct
+# create_model_stat_and_fifty_keras
+#############################################################
+if __name__ == "__main__":
+    keras_stat_fifty_exec()
+    # Statistical_Feat_DNN_model_train_predict_tensorflow() #0.44 30 epocs
+    # Statistical_Feat_DNN_model_train_predict_tensorflow_ooxml() #0.517 30 epocs cat and 1-gram, 0.47 30 epocs, add sequence is not working
+##end##  
