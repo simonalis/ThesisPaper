@@ -156,6 +156,7 @@ def MulticlassClassificationKeras_3(num_feature, num_class, train = True):
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import np_utils
 
+#Train and save statistical only model#
 def train_stat_DNN_tensorflow(model, train_dataset, val_dataset, train_labels, val_labels):
     print("Fit model on training data")
 #this case is for sequence definition. I used total 26 features, last
@@ -694,7 +695,8 @@ def create_model(trainX, trainy):
 
 #############################################################
 # 1. First need to train statistical model separately
-# Statistical_Feat_DNN_model_train_predict_tensorflow
+# Statistical_Feat_DNN_model_train_predict_tensorflow 
+# then execute Statistical_Feat_DNN_model_train_predict_tensorflow_ooxml
 # 2. Combine pretrained statistical model inputs with
 # fifty state of the art model, train and preidct
 # create_model_stat_and_fifty_keras
