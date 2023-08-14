@@ -41,3 +41,5 @@ It is also possible to train models from scratch and then run predict function.
 ## References
 FiFTy model used as part of architecture (2) as well as same dataset.
 <br>https://github.com/mittalgovind/fifty/tree/master
+<br>FiFTy pretrained models used for the project are here:
+https://github.com/mittalgovind/fifty/tree/master/fifty/utilities/models
