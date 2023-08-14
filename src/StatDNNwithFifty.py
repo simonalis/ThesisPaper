@@ -10,7 +10,6 @@ Created on 17 March 2023
 """
 import csv
 import inspect
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, hamming_loss
 
 from sklearn.model_selection import cross_val_score, cross_validate
@@ -220,43 +219,7 @@ def draw_train_results_tf(history, EPOCH):
     plt.draw()
 
 
-class ClassifierDataset():
 
-    def __init__(self, X_data, y_data):
-        self.X_data = X_data
-        self.y_data = y_data
-
-    def __getitem__(self, index):
-        return self.X_data[index], self.y_data[index]
-
-    def __len__(self):
-        return len(self.X_data)
-
-
-
-def predict_stat_DNN_pytorch(model, test_dataset, y_test):
-    test_loader = DataLoader(dataset=test_dataset, batch_size=1)
-
-    y_pred_list = []
-    with torch.no_grad():
-        model.eval()
-        for X_batch, _ in test_loader:
-            X_batch = X_batch.to(device)
-            y_test_pred = model(X_batch)
-            _, y_pred_tags = torch.max(y_test_pred, dim=1)
-            y_pred_list.append(y_pred_tags.cpu().numpy())
-    y_pred_list = [a.squeeze().tolist() for a in y_pred_list]
-    y_pred_list = []
-    with torch.no_grad():
-        model.eval()
-        for X_batch, _ in test_loader:
-            X_batch = X_batch.to(device)
-            y_test_pred = model(X_batch)
-            _, y_pred_tags = torch.max(y_test_pred, dim=1)
-            y_pred_list.append(y_pred_tags.cpu().numpy())
-    y_pred_list = [a.squeeze().tolist() for a in y_pred_list]
-
-    print(classification_report(y_test, y_pred_list, digits=3))  #not sure if y_test or test_labels shoud be used here
 def StorePredictionsInFile(pred_hist, file_name = "/pred_hist.csv"):
 
     #pred_history_file_name= "/pred_hist.csv"
@@ -299,24 +262,9 @@ def predict_stat_DNN_tensorflow(model, test_dataset, y_test):
 
    # print(classification_report(y_test, y_pred_list))  #not sure if y_test or test_labels shoud be used here
 
-# Before we start our training, let’s define a function to calculate accuracy per epoch.
-# This function takes y_pred and y_test as input arguments.
-# We then apply log_softmax to y_pred and extract the class which has a higher probability.
-# After that, we compare the predicted classes and the actual classes to calculate the accuracy.
-def multi_acc(y_pred, y_test):
-    y_pred_softmax = torch.log_softmax(y_pred, dim=1)
-    _, y_pred_tags = torch.max(y_pred_softmax, dim=1)
-
-    correct_pred = (y_pred_tags == y_test).float()
-    acc = correct_pred.sum() / len(correct_pred)
-
-    acc = torch.round(acc * 100)
-
-    return acc
-
 #keras + keras
 #################################################
-# Predicr combined statistical and fifty models
+# Predict combined statistical and fifty models
 #################################################
 def predict_stat_and_fifty_DNN_tensorflow(new_model):
     # features_train_stat = load_features_from_file("_train")
@@ -731,6 +679,7 @@ def train_byte_embed_DNN_tensorflow(model, string_sequence_train, string_sequenc
     print(tf_model_stat_output)
     draw_train_results_tf(history, EPOCHS)
     return model, history, EPOCHS
+
 def predict_byte_embed_DNN_tensorflow(model, test_dataset, y_test, n_categories):
     test_dataset = tf.convert_to_tensor(test_dataset)
     # dummy_test_y = to_categorical(y_test)
@@ -793,7 +742,6 @@ def Statistical_Feat_DNN_model_train_predict_tensorflow():
   
     predict_stat_DNN_tensorflow(new_model, features_test, y_test)
 
-
 # define and fit model on a training dataset
 def create_model(trainX, trainy):
 	# define model
@@ -804,42 +752,6 @@ def create_model(trainX, trainy):
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
     #     new_model.summary()
-# repeated evaluation of a standalone model
-def eval_standalone_model(trainX, trainy, testX, testy, n_repeats):
-    scores = list()
-    model = create_model(trainX, trainy)
-    for _ in range(n_repeats):
-        #define and fit a new model on the train dataset
-
-        print('eval_standalone_model, start train')
-        model.fit(trainX, trainy, epochs=1, verbose=1)
-        # evaluate model on test dataset
-        _, test_acc = model.evaluate(testX, testy, verbose=1)
-        scores.append(test_acc)
-    return scores, model
-
-
-# repeated evaluation of a model with transfer learning
-def eval_transfer_model(model,trainX, trainy, testX, testy, n_fixed, n_repeats):
-    scores = list()
-
-    for _ in range(n_repeats):
-        # load model
-       # model.trainable = True
-       # model = create_model()#load_model('model.h5')
-        # mark layer weights as fixed or not trainable
-        for i in range(n_fixed):
-            model.layers[-i].trainable = True
-        # re-compile model
-        model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
-        print("some freezed layers = ", n_fixed)
-        model.summary()
-        # fit model on train dataset
-        model.fit(trainX, trainy,  batch_size=1, epochs=30, verbose=0)
-        # evaluate model on test dataset
-        _, test_acc = model.evaluate(testX, testy, verbose=0)
-        scores.append(test_acc)
-    return scores, model
 
 #############################################################
 # 1. First need to train statistical model separately
