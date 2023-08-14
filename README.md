@@ -27,13 +27,16 @@ In order explore architecture
 It is possible to run only predict function for each model as models are loaded to this repository.
 (1) saved_weights_512_1_full_chunked_roberta.pt
 (2) tf_stat_fifty_weights.h5
+Models above can be downloaded fro my drive:
+https://drive.google.com/drive/folders/1nc1l70pEMZRA31_u1sADFovxRZQND60A?usp=drive_link
 
 You will need to change the code appropriately, comment train function and uncomment lines which load weights near train function.
 
 It is also possible to train models from scratch and the run predict function.
 
-## File[test.npz](src%2F512_1%2Ftest.npz) Types
+## File Types
 Classifier to 75 file types
-TBD
+![image](https://github.com/simonalis/ThesisPaper/assets/104734787/5133a2c2-3460-4640-ada6-7ee841c145db)
+
 ## References
 https://github.com/mittalgovind/fifty/tree/master
