@@ -26,7 +26,7 @@ This code includes two novel architectures
 
 <br>It is possible to run only predict function for each model as models are loaded to this repository.
 <br>(1) saved_weights_512_1_full_chunked_roberta.pt
-<br>(2) tf_stat_fifty_weights.h5
+<br>(2) tf_stat_fifty_weights.h5 (ensemble), tf_stat_weights.h5 (statistical features model)
 <br>Models above can be downloaded from my drive:
 <br>https://drive.google.com/drive/folders/1nc1l70pEMZRA31_u1sADFovxRZQND60A?usp=drive_link
 
