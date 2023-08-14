@@ -316,46 +316,6 @@ def predict_stat_and_fifty_DNN_tensorflow(new_model):
     print(target_names, [np.unique(pred_hist)])
     print(classification_report(y_test, pred_hist, digits=3))  # , target_names=target_names))
 
-def BuildThirdInputWithSpaces(X_train, train_labels, bytes_num = 100):
-
-    grams_lst = [' '] * len(train_labels)
-    string_sequence = [' '] * len(train_labels)
-    grams_num = bytes_num
-    counter = 0
-    for i in range(len(train_labels)):
-       # grams_lst[i] = X_train[i][:grams_num]
-        temp_lst = X_train[i][:grams_num]
-        data_temp = ''
-
-        for j in range(grams_num):
-            # print("temp_lst[j] = ", temp_lst[j], ", j = ", j)
-            # tt = ""
-
-            data_temp = data_temp + " " + str(temp_lst[j])
-
-        string_sequence[i] = data_temp.strip()
-        
-    tokenizer = Tokenizer()
-
-    # string_sequence = train_dataset[:, -1]
-    tokenizer.fit_on_texts(string_sequence)
-
-
-    # Vocabulary size
-    vocab_size = len(tokenizer.word_index)
-    print("Vocabulary Size:", vocab_size)
-    # Unknown Words
-    oov_count = tokenizer.word_counts.get(tokenizer.oov_token, 0)
-    print("Unknown Words Count:", oov_count)
-    # Convert the string sequences to sequences of integers
-    string_sequence_2 = tokenizer.texts_to_sequences(string_sequence)
-
-    # Pad the integer sequences to a fixed length
-    m_max_length_third_input = max(len(seq) for seq in string_sequence_2)
-    print("max_length = ", m_max_length_third_input)
-    string_sequence_1 = pad_sequences(string_sequence_2, padding='post', truncating='post')
-    # train_dataset[:, -1] = string_sequence_1
-    return string_sequence_1
 def BuildThirdInput(X_train, train_labels):
 
     grams_lst = [-1] * len(train_labels)
@@ -386,14 +346,7 @@ def BuildThirdInput(X_train, train_labels):
     string_sequence_1 = pad_sequences(string_sequence_2, padding='post', truncating='post')
     # train_dataset[:, -1] = string_sequence_1
     return string_sequence_1
-def BuildThirdInput_justbytes(X_train, train_labels, seq_len=100):
 
-    grams_lst = [-1] * len(train_labels)
-    grams_num = seq_len
-    for i in range(len(train_labels)):
-        grams_lst[i] = X_train[i][:grams_num]
-
-    return grams_lst
 #################################################
 # Train cobmined statistical and fifty models
 #################################################
@@ -536,11 +489,6 @@ def keras_stat_fifty_exec():
     new_model = train_stat_and_fifty_DNN_tensorflow(new_model, 10, "-2")
    # new_model = tf.keras.models.load_model(train_base_path + file_name_tf_stat_fifty_model + '-2')
     predict_stat_and_fifty_DNN_tensorflow(new_model)
-def preprocess(x):
-    byte_sequence = x
-    string_sequence = byte_sequence.decode('utf-8')  # Convert bytes to string
-    x = string_sequence
-    return x
 
 def add_ooxml_cat(features_train, train_labels, text_block):
     grams_num = 10
@@ -682,15 +630,6 @@ def train_byte_embed_DNN_tensorflow(model, string_sequence_train, string_sequenc
 
 def predict_byte_embed_DNN_tensorflow(model, test_dataset, y_test, n_categories):
     test_dataset = tf.convert_to_tensor(test_dataset)
-    # dummy_test_y = to_categorical(y_test)
-
-    # results = model.evaluate(test_dataset.values, dummy_test_y, batch_size=128)
-    # #print("test loss, test acc:", results)
-    # print("\n%s: %.2f%%" % (model.metrics_names[1], results[1] * 100))
-    # Generate predictions (probabilities -- the output of the last layer)
-    # on new data using `predict`
-    #  print("Generate predictions for 3 samples")
-    # test_dataset = tf.reshape(test_dataset, (-1, 1, 1))
     logits = model.predict(test_dataset, batch_size=64)
     prob = tf.nn.softmax(logits, axis=1).numpy()
     predictions = np.argmax(prob, axis=1)
