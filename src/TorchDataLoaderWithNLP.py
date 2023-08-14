@@ -46,8 +46,6 @@ def load_data_from_file(what_data_str, size):
   f.close()
   print(count)
   return texts
-#https://pytorch.org/tutorials/beginner/torchtext_translation_tutorial.html
-
 
 class RobertoDataLoader:
     def __init__(self, tokenizer1, training_file, labels, batch_size, max_length):
@@ -102,32 +100,10 @@ class RobertoDataLoader:
                 yield input_ids, attention_mask, targets
 
 
-class BertBinaryClassifier(nn.Module):
-    def __init__(self, bert):
-        super(BertBinaryClassifier, self).__init__()
-
-        self.bert = bert
-        # print(bert)
-      #  self.dropout = nn.Dropout(0.1)
-        #self.linear = nn.Linear(768, 5)
-        self.sigmoid = nn.Sigmoid()
-       # self.softmax = nn.Softmax()
-
-    def forward(self, tokens, masks=None):
-        #_, pooled_output \
-        pooled_output = self.bert(tokens, attention_mask=masks, return_dict=False)
-       # dropout_output = self.dropout(pooled_output)
-       # linear_output = self.linear(dropout_output)
-       # proba = self.softmax(linear_output)
-        proba = self.sigmoid(pooled_output)
-        return proba
-
 def loss_fn(outputs, targets):
     return torch.nn.CrossEntropyLoss()(outputs, targets)
 
-def create_model():#tokens_train):
-
-
+def create_model():
     model = RobertaForSequenceClassification.from_pretrained('roberta-base', num_labels=n_categories)
     model = model.to(device)
     print(str(torch.cuda.memory_allocated(device)/1000000 ) + 'M')
@@ -136,7 +112,6 @@ def create_model():#tokens_train):
     torch.cuda.empty_cache()
     epocs = 2
     return model, optimizer, epocs
-
 
 # function to train the model
 def train(model, train_dataloader):
@@ -168,17 +143,10 @@ def train(model, train_dataloader):
         model.zero_grad()
 
         # get model predictions for the current batch -> here
-        preds = model(sent_id, mask)
-       # loss, preds, last_hidden_states, pooler_output = model(sent_id, mask)
-        #print('preds ', preds, '\nshape =', preds.size())
-        # # compute the loss between actual and predicted values
-       # #labels = labels.to(torch.float32)
+        preds = model(sent_id, mask)  
 
         loss = loss_fn(preds.logits, labels)
-        # predicted_token_class_ids = preds.logits.argmax(-1)
-        # pred_labels = predicted_token_class_ids
-        # loss = model(sent_id, labels=pred_labels).loss
-
+  
         # add on to the total loss
         total_loss = total_loss + round(loss.item(), 2)
         # backward pass to calculate the gradients
@@ -356,13 +324,6 @@ def predict(model, test_dataloader, y_test):
     # else:
     print(classification_report(y_test[:len(bert_predicted)], bert_predicted))
 
-    # confusion_matrix = sklearn.metrics.confusion_matrix(y_test[:len(bert_predicted)], bert_predicted, labels=n_categories)
-    # seaborn.heatmap(confusion_matrix, annot=True, fmt='d', cmap='seismic', square=True)
-    # fig1 = plt.gcf()
-    # plt.show()
-    # plt.draw()
-    #
-    # fig1.savefig(model_directory + '/roberta_predict.png')
 def plot_train_logs(t_losses, v_losses):
     # plot training progress
     plt.plot(t_losses)
