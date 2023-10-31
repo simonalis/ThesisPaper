@@ -4,7 +4,7 @@ This code includes two novel architectures
 <br>(1) Transformers NLP for file classification
 <br>(2) Handcrafted statistical with FiFTy ensemble
 
-In order to use this project okease use Keras and TensorFlow 2.11.0 and PyTorch 1.13.0+cu117 Python 3.8. 
+In order to use this project please use Keras and TensorFlow 2.11.0 and PyTorch 1.13.0+cu117 Python 3.8. 
 Our experimentation framework was executed on a Linux platform, harnessing the prowess of an NVIDIA GPU
 ## Directory structure
 <br>1. The structure of the /src directory is as follows
